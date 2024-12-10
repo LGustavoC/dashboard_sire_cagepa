@@ -4,4 +4,4 @@ geopandas
 folium
 streamlit-folium
 numpy
-plotly.express
+plotly
