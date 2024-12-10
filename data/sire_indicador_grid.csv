@@ -1,0 +1,16 @@
+Sigla,Título,Setor Responsável,Unidade,Fórmula,Domínio
+IN205,ISH - Índice de Substituição de Hidrômetros,GERENCIA PARA ASSUNTOS REGULATORIOS,percentual,AG107$1/ AG106$1,Prestação de Serviços
+IN206,IR - Índice de Reservação,GERENCIA PARA ASSUNTOS REGULATORIOS,percentual,AG109$1/AG110$1,Prestação de Serviços
+IN200,IUAA -Indicador de Universalização do Abastecimento de Água,GERENCIA DE CONCESSOES E CONTRATOS DE PROGRAMA,percentual,(AG200$1/GE101$1)*100,Prestação de Serviços
+IN203,IUTES - Índicador de Universalização de Tratamento de Esgoto Sanitários,GERENCIA DE CONCESSOES E CONTRATOS DE PROGRAMA,percentual,ES201$1/ES202$1,Prestação de Serviços
+IN207,ICA - Índice de Continuidade do Abastecimento,GERENCIA PARA ASSUNTOS REGULATORIOS,percentual,1,Prestação de Serviços
+IN213,KRL - Quilômetro de Rede Limpa,DIRETORIA DE OPERAC?O E MANUTENC?O,km,1,Prestação de Serviços
+IN208,IQAD – Índice de Qualidade de Água Distribuída,GERENCIA DE CONTROLE DE QUALIDADE,percentual,"0,14*QD109+0,25*QD110+0,25*QD111+0,01*QD112+0,35*QD113",Prestação de Serviços
+IN209,IRC - Índice de Remoção de Carga - Avaliar Operação,GERENCIA DE CONTROLE DE QUALIDADE,percentual,1,Prestação de Serviços
+IN210,ICC-G - Índice de Córregos Conformes Geral,GERENCIA DE CONTROLE DE QUALIDADE,percentual,1,Prestação de Serviços
+IN214,IESAP – Índice de Eficiência na Prestação de Serviços e no Atendimento ao Público,DIRETORIA COMERCIAL,Indefinida,1,Prestação de Serviços
+IN212,ELE - Entupimento nas Ligações de Esgoto,DIRETORIA DE OPERAC?O E MANUTENC?O,Ocorrências/ano,1,Prestação de Serviços
+IN201,IPD - Índice de Perdas na Distribuição,GERENCIA DE CONCESSOES E CONTRATOS DE PROGRAMA,percentual,(AG006$1+AG018$1-AG010$1-AG024$1)/(AG006$1+AG018$1-AG024$1)*100,Prestação de Serviços
+IN204,IH - Índice de Hidromedição,GERENCIA PARA ASSUNTOS REGULATORIOS,percentual,AG004$1/AG002$1,Prestação de Serviços
+IN202,IUCES – Índicador de Universalização de Coleta de Esgotos Sanitários,GERENCIA DE CONCESSOES E CONTRATOS DE PROGRAMA,percentual,(ES200$1/GE101$1)*100,Prestação de Serviços
+IN211,EK - Entupimento na Rede,GERENCIA DE MANUTENC?O,Unidade,SV101 + SV102 / ES004,Prestação de Serviços
