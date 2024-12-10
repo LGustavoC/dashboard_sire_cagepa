@@ -82,7 +82,7 @@ def create_map_microrregioes(geojson, microrregiao_data, microrregioes):
             popup_info = f"<b>Microrregião: {microrregiao}</b><br>"
             #for _, dado in dados_microrregiao.iterrows():
                 #popup_info += f"Indicador: {dado['Sigla']} - Valor: {dado['Valor']}<br>"
-            popup_info = create_popup_with_tabs_microrregioes(microrregiao_data, microrregiao)
+            popup_info = create_popup_with_tabs_microrregioes(dados_microrregiao, microrregiao)
             
             #custom_popup = create_popup_with_tabs_microrregioes(microrregiao, microrregiao_data)
             folium.GeoJson(
