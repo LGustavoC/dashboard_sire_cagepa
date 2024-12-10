@@ -30,6 +30,7 @@ def load_indicator_data(file_path):
     # Limpar dados
     columns_to_check = ["IBGE", "Cidade", "Sigla", "Ano", "Mês", "Valor"]  # Colunas críticas
     data = clean_data(data, columns_to_check)
+    
 
     data["Ano"] = data["Ano"].astype(str)
     data["IBGE"] = data["IBGE"].astype(str)
