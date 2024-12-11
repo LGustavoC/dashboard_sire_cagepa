@@ -279,8 +279,8 @@ with tabs[0]:  # Aba de Cidades
 
     # Exibir tabelas e mapa para cidades
     #show_consolidated_table(filtered_data_cidades, indicadores_selecionados, is_anual)
-    mapa_cidades = create_map(geojson, filtered_data_cidades, municipios_selecionados, nao_atendidas)
-    st_folium(mapa_cidades, width=1000, height=600)
+    #mapa_cidades = create_map(geojson, filtered_data_cidades, municipios_selecionados, nao_atendidas)
+    #st_folium(mapa_cidades, width=1000, height=600)
     show_detailed_table(filtered_data_cidades, is_anual)
     create_comparative_chart_with_tabs(
         data=general_indicator_value,
@@ -391,8 +391,8 @@ with tabs[1]:  # Aba de Microrregiões
     #show_consolidated_table(filtered_data_microrregioes, indicadores_selecionados, is_anual)
 
     # Criar mapa para microrregiões
-    mapa_microrregioes = create_map_microrregioes(geojson, filtered_data_microrregioes, microrregioes)
-    st_folium(mapa_microrregioes, width=1000, height=600)
+    #mapa_microrregioes = create_map_microrregioes(geojson, filtered_data_microrregioes, microrregioes)
+    #st_folium(mapa_microrregioes, width=1000, height=600)
     
 
     for microrregiao in microrregioes_selecionadas:
