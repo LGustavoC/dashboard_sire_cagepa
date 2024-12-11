@@ -178,9 +178,15 @@ municipios_obrigatorios_filtro = ["2507507",
 ]
 indicator_data = indicator_data[indicator_data["Sigla"].isin(indicadores_desejados)]
 indicator_data["Ano"] = indicator_data["Ano"].apply(dotRemove)
-indicator_data["Valor"] = indicator_data["Valor"].apply(changeMax)
+#indicator_data["Valor"] = indicator_data["Valor"].apply(changeMax)
 indicator_data = indicator_data[indicator_data["Ano"].isin(['2023'])]
+#indicator_data = indicator_data[indicator_data["Valor"] != '.00']
 indicator_data = indicator_data[indicator_data["IBGE"].isin(municipios_obrigatorios_filtro)]
+# Converta a coluna 'salário' para o tipo numérico; definir valores não numéricos para NaN
+indicator_data[ "Valor" ] = pd.to_numeric(indicator_data[ "Valor" ], errors= "coerce" ) 
+
+# Descartar linhas contendo NaN na coluna 'salary'
+indicator_data.dropna(subset=[ "Valor" ], inplace= True )
 
 # Carregar glossário
 glossario_data = pd.read_csv("./data/sire_indicador_grid.csv", sep=",")
