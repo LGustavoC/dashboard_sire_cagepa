@@ -166,10 +166,21 @@ indicadores_desejados = ["IN200",
                          "IN204",
                          "IN205",
                          "IN208"]
+
+municipios_obrigatorios_filtro = ["2507507",
+                                  "2504009",
+                                  "2503704",
+                                  "2504033",
+                                  "2510808",
+                                  "2512788",
+                                  "2501153",
+                                  "2514651"
+]
 indicator_data = indicator_data[indicator_data["Sigla"].isin(indicadores_desejados)]
 indicator_data["Ano"] = indicator_data["Ano"].apply(dotRemove)
 indicator_data["Valor"] = indicator_data["Valor"].apply(changeMax)
 indicator_data = indicator_data[indicator_data["Ano"].isin(['2023'])]
+indicator_data = indicator_data[indicator_data["IBGE"].isin(municipios_obrigatorios_filtro)]
 
 # Carregar glossário
 glossario_data = pd.read_csv("./data/sire_indicador_grid.csv", sep=",")
