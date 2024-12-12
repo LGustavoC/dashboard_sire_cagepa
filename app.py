@@ -179,7 +179,7 @@ municipios_obrigatorios_filtro = ["2507507",
 indicator_data = indicator_data[indicator_data["Sigla"].isin(indicadores_desejados)]
 indicator_data["Ano"] = indicator_data["Ano"].apply(dotRemove)
 #indicator_data["Valor"] = indicator_data["Valor"].apply(changeMax)
-indicator_data = indicator_data[indicator_data["Ano"].isin(['2023'])]
+indicator_data = indicator_data[indicator_data["Ano"].isin(['2023', '2024'])]
 #indicator_data = indicator_data[indicator_data["Valor"] != '.00']
 indicator_data = indicator_data[indicator_data["IBGE"].isin(municipios_obrigatorios_filtro)]
 # Converta a coluna 'salário' para o tipo numérico; definir valores não numéricos para NaN
@@ -244,7 +244,7 @@ meses_invert_map = {v: k for k, v in meses_map.items()}
 
 # Lista de anos e meses disponíveis
 #anos_disponiveis = sorted(indicator_data["Ano"].unique())
-anos_disponiveis = ['2023']
+anos_disponiveis = ['2023', '2024']
 meses_disponiveis = sorted(indicator_data["Mês"].dropna().unique(), key=lambda x: meses_invert_map[x])
 
 # Criar abas para Cidade e Microrregiões
@@ -282,7 +282,7 @@ with tabs[0]:  # Aba de Cidades
         (indicator_data["Mês"].map(meses_invert_map) <= meses_invert_map[mes_final]) & 
         (indicator_data["Cidade"].isin(municipios_selecionados))
     ]
-
+    general_indicator_value = general_indicator_value[general_indicator_value["Ano"].isin([ano_inicial, ano_final])]
     # Exibir tabelas e mapa para cidades
     #show_consolidated_table(filtered_data_cidades, indicadores_selecionados, is_anual)
     #mapa_cidades = create_map(geojson, filtered_data_cidades, municipios_selecionados, nao_atendidas)
