@@ -2,8 +2,9 @@ import plotly.express as px
 import pandas as pd
 import streamlit as st
 import itables
+from utils.functions import display_metrics
 
-def create_comparative_chart_with_tabs(data, cidades, indicadores, periodo_anual):
+def create_comparative_chart_with_tabs(data, cidades, indicadores, periodo_anual, ano_selecionado):
     """
     Cria gráficos comparativos organizados em abas para os indicadores selecionados.
     """
@@ -61,6 +62,10 @@ def create_comparative_chart_with_tabs(data, cidades, indicadores, periodo_anual
                 st.write("Nenhum dado disponível para este indicador.")
                 continue
 
+            st.write('Meta:')
+
+            display_metrics(indicador, int(ano_selecionado), indicador_data['IBGE'])
+
             if periodo_anual:
                 # Gráfico de barras para dados anuais
                 fig = px.bar(
@@ -104,7 +109,7 @@ def create_comparative_chart_with_tabs(data, cidades, indicadores, periodo_anual
 
                 st.write(indicador_data[['Cidade','Período', 'Valor']])
 
-def create_comparative_chart_with_tabs_microrregioes(data, microrregioes, indicadores, periodo_anual):
+def create_comparative_chart_with_tabs_microrregioes(data, microrregioes, indicadores, periodo_anual, ano_selecionado):
     """
     Cria gráficos comparativos organizados em abas para os indicadores selecionados, adaptados para microrregiões.
     """
@@ -157,7 +162,9 @@ def create_comparative_chart_with_tabs_microrregioes(data, microrregioes, indica
             if indicador_data.empty:
                 st.write("Nenhum dado disponível para este indicador.")
                 continue
-
+            
+            display_metrics(indicador, int(ano_selecionado))
+            
             if periodo_anual:
                 # Gráfico de barras para dados anuais
                 fig = px.bar(

@@ -96,3 +96,106 @@ def clean_data(data, columns_to_check=None):
     data = data.reset_index(drop=True)
     
     return data
+
+def display_metrics(sigla, ano, cidades=None):
+    """
+    Exibe métricas diferentes usando st.metric com base na sigla e ano selecionados.
+    Parâmetros:
+    - sigla (str): Indicador selecionado.
+    - ano (str): Ano selecionado.
+    """
+    # Dicionário com as métricas da meta
+    metricas_meta = {
+        "IN200": {2023: "≥ 99%", 2024: "≥ 99%"},
+        "IN202": {2023: "≥ 70%", 2024: "≥ 70%"},
+        "IN203": {2023: "≥ 70%", 2024: "≥ 70%"},
+        "IN204": {2023: "---", 2024: "---"},
+        "IN205": {2023: "≥ 15%", 2024: "≥ 15%"},
+        "IN208": {2023: "≥ 90%", 2024: "≥ 90%"},
+    }
+
+    # Dicionário específico para IN201, que inclui IBGE
+    metricas_in201 = {
+        2023: {
+            "2507507": "≤ 55,3%",
+            "2501153": "≤ 38,13%",
+            "2502300": "≤ 38,13%",
+            "2503704": "≤ 38,13%",
+            "2504009": "≤ 38,13%",
+            "2504033": "≤ 75,00%",
+            "2510600": "≤ 38,13%",
+            "2510808": "≤ 38,13%",
+        },
+        2024: {
+            "2507507": "≤ 52,3%",
+            "2501153": "≤ 38,13%",
+            "2502300": "≤ 38,13%",
+            "2503704": "≤ 38,13%",
+            "2504009": "≤ 38,13%",
+            "2504033": "≤ 70,00%",
+            "2510600": "≤ 38,13%",
+            "2510808": "≤ 38,13%",
+        }
+    }
+
+    # Tratamento especial para IN201
+    # if sigla == "IN201":
+    #     print(cidades)
+        # if cidades and ano in metricas_in201 and cidades in metricas_in201[ano]:
+        #     for cidade in cidades:
+        #         meta = metricas_in201[ano][cidade]
+        #         st.metric(label=f"Métrica - {sigla} ({ano}, IBGE: {ibge})", value=meta)
+        # else:
+        #     meta = "Meta não definida para o município selecionado"
+        #st.metric(label=f"Métrica - {sigla} ({ano}, IBGE: {ibge})", value=meta)
+    if sigla=='IN201':
+        data_in201 = {
+        "Sigla": ["IN201"] * 16,
+        "Ano": [2023, 2024, 2023, 2024, 2023, 2024, 2023, 2024, 2023, 2024, 2023, 2024, 2023, 2024, 2023, 2024],
+        "IBGE": [
+            "2507507", "2507507", "2501153", "2501153", "2502300", "2502300", 
+            "2503704", "2503704", "2504009", "2504009", "2504033", "2504033", 
+            "2510600", "2510600", "2510808", "2510808"
+        ],
+        "Cidade": [
+            "João Pessoa", "João Pessoa", "Areia de Baraúnas", "Areia de Baraúnas", "Bom Sucesso", "Bom Sucesso", 
+            "Cajazeiras", "Cajazeiras", "Campina Grande", "Campina Grande", "Capim", "Capim", 
+            "Ouro Velho", "Ouro Velho", "Patos", "Patos"
+        ],
+        "Valor_Meta": [
+            "≤ 55,3%", "≤ 52,3%", "≤ 38,13%", "≤ 38,13%", "≤ 38,13%", "≤ 38,13%",
+            "≤ 38,13%", "≤ 38,13%", "≤ 38,13%", "≤ 38,13%", "≤ 75,00%", "≤ 70,00%",
+            "≤ 38,13%", "≤ 38,13%", "≤ 38,13%", "≤ 38,13%"
+            ]
+        }
+
+        # Criar DataFrame
+        df_in201 = pd.DataFrame(data_in201)
+        df_in201 = df_in201[df_in201['Ano'] == ano]
+        st.write(df_in201)
+        meta = ''
+    else:
+    # Verificar se a sigla e o ano existem no dicionário
+        if sigla in metricas_meta and ano in metricas_meta[sigla]:
+            meta = metricas_meta[sigla][ano]
+        else:
+            meta = "Meta não definida"
+
+    # Exibir métricas no Streamlit
+    st.metric(label="Meta", value=meta)
+    #st.metric(label=f"Métrica - {sigla} ({ano})", value=meta)
+
+    # Exemplo de diferentes valores para cada sigla
+    # Adiciona uma métrica complementar
+    switch_values = {
+        "IN200": "Qualidade Máxima",
+        "IN202": "Tratamento Eficiente",
+        "IN203": "Cobertura Satisfatória",
+        "IN204": "Sem meta definida",
+        "IN205": "Hidrômetros Substituídos",
+        "IN208": "Água de Qualidade"
+    }
+    descricao = switch_values.get(sigla, "Sem descrição disponível")
+
+    # Exibir descrição complementar
+    #st.write(f"**Descrição:** {descricao}")

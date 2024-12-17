@@ -163,3 +163,8 @@ td {
 .button[data-testid="baseButton-header"]{
     color: white;
 }
+
+.st-emotion-cache-eqffof p {
+    word-break: break-word;
+    font-size: xx-large;
+}

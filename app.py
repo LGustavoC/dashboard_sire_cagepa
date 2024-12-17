@@ -1,141 +1,3 @@
-# import streamlit as st
-# from components.map import create_map
-# from components.tables import show_consolidated_table, show_detailed_table
-# from components.charts import create_comparative_chart_with_tabs
-# from utils.data_loader import load_geojson, load_indicator_data
-# from utils.functions import dotRemove
-# from streamlit_folium import st_folium
-# import pandas as pd
-
-# # Configuração do layout
-# #st.set_page_config(page_icon=":bar_chart:" page_title="Dashboard CAGEPA", layout="wide")
-# st.set_page_config(page_title="Dashboard PS", page_icon=":bar_chart:", layout="wide")
-# # Adicionar o logo e título
-# st.image("./assets/logo.png", width=500)  # Substitua pelo caminho correto do logo
-
-# st.title('Dashboard de Indicadores - Prestação de Serviço')
-
-# # Estilos customizados
-# with open("./styles/custom.css") as css:
-#     st.markdown(f"<style>{css.read()}</style>", unsafe_allow_html=True)
-
-# # Carregar dados
-# geojson = load_geojson("./data/geojs-25-mun.json")
-# indicator_data = load_indicator_data("./data/sire_indicador_valor_grid.csv")
-# indicator_data["Ano"] = indicator_data["Ano"].apply(dotRemove)
-# # Carregar os dados
-# glossario_data = pd.read_csv("./data/sire_indicador_grid.csv", sep=";")
-# # Mesclar dados pelo campo 'Sigla'
-# general_indicator_value = pd.merge(
-#     indicator_data,
-#     glossario_data[["Sigla", "Título"]],  # Selecionar colunas úteis
-#     on="Sigla",
-#     how="left"
-# )
-
-# st.markdown("### Glossário de Indicadores")
-# glossario = general_indicator_value[["Sigla", "Título"]].drop_duplicates().sort_values("Sigla")
-# #st.dataframe(glossario, use_container_width=True)
-
-# # Criar HTML da tabela sem índice
-# glossario_html = glossario.to_html(index=False, escape=False, classes="custom-table")
-
-# # Estilos personalizados
-# custom_css = """
-# <style>
-# .custom-table {
-#     width: 100%;
-#     border-collapse: collapse;
-#     margin: 20px 0;
-#     font-size: 16px;
-#     text-align: left;
-# }
-# .custom-table th {
-#     background-color: #003893; /* Cor do cabeçalho */
-#     color: white;
-#     padding: 12px;
-#     text-align: center;
-# }
-# .custom-table td {
-#     border: 1px solid #ddd;
-#     padding: 8px;
-#     font-weight:600;
-# }
-# .custom-table tr:hover {
-#     background-color: #4eacfa; /* Efeito hover */
-# }
-# </style>
-# """
-
-# # Exibir a tabela estilizada no Streamlit
-# st.markdown(custom_css + glossario_html, unsafe_allow_html=True)
-# # Configuração: IBGEs de cidades não atendidas
-# nao_atendidas = ["", ""]  # Exemplo de IBGEs de cidades não atendidas
-
-# # Mapeamento de meses para valores numéricos e vice-versa
-# meses_map = {1: "Janeiro", 2: "Fevereiro", 3: "Março", 4: "Abril", 5: "Maio", 6: "Junho",
-#              7: "Julho", 8: "Agosto", 9: "Setembro", 10: "Outubro", 11: "Novembro", 12: "Dezembro"}
-# meses_invert_map = {v: k for k, v in meses_map.items()}  # Mapeamento inverso
-
-# # Lista de anos e meses disponíveis
-# anos_disponiveis = sorted(indicator_data["Ano"].unique())
-# meses_disponiveis = sorted(indicator_data["Mês"].dropna().unique(), key=lambda x: meses_invert_map[x])
-
-# # Filtros
-# indicadores = ["Todos"] + indicator_data["Sigla"].unique().tolist()
-# municipios = ["Todos"] + sorted(indicator_data["Cidade"].unique())
-
-# indicadores_selecionados = st.sidebar.multiselect("Selecione os Indicadores", indicadores, default="Todos")
-# ano_inicial = st.sidebar.selectbox("Ano Inicial", anos_disponiveis, index=0)
-# ano_final = st.sidebar.selectbox("Ano Final", anos_disponiveis, index=len(anos_disponiveis) - 1)
-# mes_inicial = st.sidebar.selectbox("Mês Inicial", meses_disponiveis, index=0)
-# mes_final = st.sidebar.selectbox("Mês Final", meses_disponiveis, index=len(meses_disponiveis) - 1)
-# municipios_selecionados = st.sidebar.multiselect("Selecione os Municípios", municipios, default="Todos")
-# is_anual = st.sidebar.checkbox("Consolidado Anual")
-
-# # Ajustar seleção "Todos" para Indicadores e Municípios
-# if "Todos" in indicadores_selecionados:
-#     indicadores_selecionados = indicator_data["Sigla"].unique().tolist()
-
-# if "Todos" in municipios_selecionados:
-#     municipios_selecionados = indicator_data["Cidade"].unique().tolist()
-
-# # Filtrar os dados com base nos intervalos selecionados
-# filtered_data = indicator_data[
-#     (indicator_data["Sigla"].isin(indicadores_selecionados)) &
-#     (indicator_data["Ano"] >= ano_inicial) &
-#     (indicator_data["Ano"] <= ano_final) &
-#     (indicator_data["Mês"].map(meses_invert_map) >= meses_invert_map[mes_inicial]) &
-#     (indicator_data["Mês"].map(meses_invert_map) <= meses_invert_map[mes_final]) &
-#     (indicator_data["Cidade"].isin(municipios_selecionados))
-# ]
-
-# # Exibir tabelas e mapa
-# if indicadores_selecionados and ano_inicial and ano_final:
-#     # Mostrar tabela consolidada para Paraíba
-#     show_consolidated_table(filtered_data, indicadores_selecionados, is_anual)
-
-#     # Criar mapa com os dados filtrados
-#     mapa = create_map(
-#         geojson,
-#         filtered_data,
-#         municipios_selecionados,
-#         nao_atendidas
-#     )
-#     st_folium(mapa, width=1000, height=600)
-
-#     # Mostrar tabela detalhada com base nos filtros
-#     show_detailed_table(filtered_data, is_anual)
-#     # Criar gráficos comparativos
-#     create_comparative_chart_with_tabs(
-#         data=general_indicator_value,
-#         cidades=municipios_selecionados,
-#         indicadores=indicadores_selecionados,
-#         periodo_anual=is_anual == "Anual"
-#     )
-
-# else:
-#     st.warning("Selecione pelo menos um indicador, um ano e um período para visualizar os dados.")
 import streamlit as st
 from components.map import create_map, create_map_microrregioes
 from components.tables import show_detailed_table
@@ -167,14 +29,14 @@ indicadores_desejados = ["IN200",
                          "IN205",
                          "IN208"]
 
-municipios_obrigatorios_filtro = ["2507507",
-                                  "2504009",
-                                  "2503704",
-                                  "2504033",
-                                  "2510808",
-                                  "2512788",
-                                  "2501153",
-                                  "2514651"
+municipios_obrigatorios_filtro = ['2507507',
+                                  '2504009',
+                                  '2503704',
+                                  '2504033',
+                                  '2510808',
+                                  '2502300',
+                                  '2501153',
+                                  '2510600'
 ]
 indicator_data = indicator_data[indicator_data["Sigla"].isin(indicadores_desejados)]
 indicator_data["Ano"] = indicator_data["Ano"].apply(dotRemove)
@@ -266,8 +128,9 @@ with tabs[0]:  # Aba de Cidades
     if "Todos" in indicadores_selecionados:
         indicadores_selecionados = indicator_data["Sigla"].unique().tolist()
 
-    ano_inicial = st.sidebar.selectbox("Ano Inicial", anos_disponiveis, index=0)
-    ano_final = st.sidebar.selectbox("Ano Final", anos_disponiveis, index=len(anos_disponiveis) - 1)
+    ano_inicial = st.sidebar.selectbox("Ano", anos_disponiveis, index=0)
+    #ano_final = st.sidebar.selectbox("Ano Final", anos_disponiveis, index=len(anos_disponiveis) - 1)
+    ano_final = ano_inicial
     mes_inicial = st.sidebar.selectbox("Mês Inicial", meses_disponiveis, index=0)
     mes_final = st.sidebar.selectbox("Mês Final", meses_disponiveis, index=len(meses_disponiveis) - 1)
     #is_anual = st.sidebar.checkbox("Consolidado Anual")
@@ -292,7 +155,8 @@ with tabs[0]:  # Aba de Cidades
         data=general_indicator_value,
         cidades=municipios_selecionados,
         indicadores=indicadores_selecionados,
-        periodo_anual=is_anual
+        periodo_anual=is_anual,
+        ano_selecionado=ano_inicial
     )
 
 # Aba de Microrregiões
@@ -369,6 +233,13 @@ with tabs[1]:  # Aba de Microrregiões
         "IN215": "mean",
     }
 
+    indicator_data = indicator_data[
+        (indicator_data["Sigla"].isin(indicadores_selecionados)) &
+        (indicator_data["Ano"] >= ano_inicial) & 
+        (indicator_data["Ano"] <= ano_final) & 
+        (indicator_data["Mês"].map(meses_invert_map) >= meses_invert_map[mes_inicial]) &
+        (indicator_data["Mês"].map(meses_invert_map) <= meses_invert_map[mes_final])
+    ]
     # Agrupar dados por microrregião
     microrregiao_data = agrupar_dados_por_microrregiao(indicator_data, microrregioes, operacoes)
     microrregiao_data["Valor"] = microrregiao_data["Valor"].apply(changeMax)
@@ -420,6 +291,7 @@ with tabs[1]:  # Aba de Microrregiões
             filtered_data_microrregioes,
             microrregioes=microrregioes_selecionadas,
             indicadores=indicadores_selecionados,
-            periodo_anual=is_anual
+            periodo_anual=is_anual,
+            ano_selecionado=ano_inicial
         )
     #create_comparative_chart_with_tabs_microrregioes(filtered_data_microrregioes, microrregioes, general_indicator_value, is_anual)
