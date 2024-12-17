@@ -6,10 +6,9 @@ from utils.data_loader import load_geojson, load_indicator_data
 from utils.functions import dotRemove, agrupar_dados_por_microrregiao, changeMax
 from streamlit_folium import st_folium
 import pandas as pd
-import warnings
 
 # Desativar o warning temporariamente
-warnings.simplefilter(action="ignore", category=pd.errors.SettingWithCopyWarning)
+#warnings.simplefilter(action="ignore", category=pd.errors.SettingWithCopyWarning)
 
 # Configuração do layout
 st.set_page_config(page_title="Dashboard PS", page_icon=":bar_chart:", layout="wide")
