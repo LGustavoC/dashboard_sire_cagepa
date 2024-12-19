@@ -1,7 +1,7 @@
 import streamlit as st
 from components.map import create_map, create_map_microrregioes
 from components.tables import show_detailed_table
-from components.charts import create_comparative_chart_with_tabs, create_comparative_chart_with_tabs_microrregioes
+from components.charts import create_comparative_chart_with_tabs, create_comparative_chart_with_tabs_microrregioes, create_annual_bar_chart, create_annual_bar_chart_microrregioes
 from utils.data_loader import load_geojson, load_indicator_data
 from utils.functions import dotRemove, agrupar_dados_por_microrregiao, changeMax
 from streamlit_folium import st_folium
@@ -47,10 +47,10 @@ indicator_data["Ano"] = indicator_data["Ano"].apply(dotRemove)
 indicator_data = indicator_data[indicator_data["Ano"].isin(['2023', '2024'])]
 #indicator_data = indicator_data[indicator_data["Valor"] != '.00']
 indicator_data = indicator_data[indicator_data["IBGE"].isin(municipios_obrigatorios_filtro)]
-# Converta a coluna 'salário' para o tipo numérico; definir valores não numéricos para NaN
+# Converta a coluna 'valor' para o tipo numérico; definir valores não numéricos para NaN
 indicator_data[ "Valor" ] = pd.to_numeric(indicator_data[ "Valor" ], errors= "coerce" ) 
 
-# Descartar linhas contendo NaN na coluna 'salary'
+# Descartar linhas contendo NaN na coluna 'valor'
 indicator_data.dropna(subset=[ "Valor" ], inplace= True )
 
 # Carregar glossário
@@ -95,7 +95,6 @@ custom_css = """
 }
 </style>
 """
-
 # Exibir a tabela estilizada no Streamlit
 st.markdown(custom_css + glossario_html, unsafe_allow_html=True)
 
@@ -136,8 +135,8 @@ with tabs[0]:  # Aba de Cidades
     ano_final = ano_inicial
     mes_inicial = st.sidebar.selectbox("Mês Inicial", meses_disponiveis, index=0)
     mes_final = st.sidebar.selectbox("Mês Final", meses_disponiveis, index=len(meses_disponiveis) - 1)
-    #is_anual = st.sidebar.checkbox("Consolidado Anual")
-    is_anual = False
+    is_anual = st.sidebar.checkbox("Consolidado Anual")
+    #is_anual = False
 
     # Filtrar os dados
     filtered_data_cidades = indicator_data[
@@ -151,16 +150,27 @@ with tabs[0]:  # Aba de Cidades
     general_indicator_value = general_indicator_value[general_indicator_value["Ano"].isin([ano_inicial, ano_final])]
     # Exibir tabelas e mapa para cidades
     #show_consolidated_table(filtered_data_cidades, indicadores_selecionados, is_anual)
-    #mapa_cidades = create_map(geojson, filtered_data_cidades, municipios_selecionados, nao_atendidas)
-    #st_folium(mapa_cidades, width=1000, height=600)
-    show_detailed_table(filtered_data_cidades, is_anual)
-    create_comparative_chart_with_tabs(
-        data=general_indicator_value,
-        cidades=municipios_selecionados,
-        indicadores=indicadores_selecionados,
-        periodo_anual=is_anual,
-        ano_selecionado=ano_inicial
-    )
+    
+    if is_anual:
+        show_detailed_table(general_indicator_value, is_anual)
+        st.markdown("## Gráfico de Período Anual")
+        create_annual_bar_chart(
+            data=general_indicator_value,
+            cidades=municipios_selecionados,
+            indicadores=indicadores_selecionados,
+            ano_selecionado=ano_inicial
+        )
+    else:
+        show_detailed_table(filtered_data_cidades, is_anual)
+        create_comparative_chart_with_tabs(
+            data=general_indicator_value,
+            cidades=municipios_selecionados,
+            indicadores=indicadores_selecionados,
+            periodo_anual=is_anual,
+            ano_selecionado=ano_inicial
+        )
+    mapa_cidades = create_map(geojson, filtered_data_cidades, municipios_selecionados, nao_atendidas)
+    st_folium(mapa_cidades, width=1000, height=600)
 
 # Aba de Microrregiões
 with tabs[1]:  # Aba de Microrregiões
@@ -236,15 +246,29 @@ with tabs[1]:  # Aba de Microrregiões
         "IN215": "mean",
     }
 
-    indicator_data = indicator_data[
-        (indicator_data["Sigla"].isin(indicadores_selecionados)) &
-        (indicator_data["Ano"] >= ano_inicial) & 
-        (indicator_data["Ano"] <= ano_final) & 
-        (indicator_data["Mês"].map(meses_invert_map) >= meses_invert_map[mes_inicial]) &
-        (indicator_data["Mês"].map(meses_invert_map) <= meses_invert_map[mes_final])
-    ]
+    if (is_anual):
+        indicator_data = indicator_data[
+            (indicator_data["Sigla"].isin(indicadores_selecionados)) &
+            (indicator_data["Ano"] >= ano_inicial) & 
+            (indicator_data["Ano"] <= ano_final) &
+            (indicator_data["Mês"].isna())
+        ]
+    else:
+        indicator_data = indicator_data[
+            (indicator_data["Sigla"].isin(indicadores_selecionados)) &
+            (indicator_data["Ano"] >= ano_inicial) & 
+            (indicator_data["Ano"] <= ano_final) & 
+            (indicator_data["Mês"].map(meses_invert_map) >= meses_invert_map[mes_inicial]) &
+            (indicator_data["Mês"].map(meses_invert_map) <= meses_invert_map[mes_final])
+        ]
     # Agrupar dados por microrregião
-    microrregiao_data = agrupar_dados_por_microrregiao(indicator_data, microrregioes, operacoes)
+    microrregiao_data = agrupar_dados_por_microrregiao(indicator_data, microrregioes, operacoes, is_anual)
+    microrregiao_data = pd.merge(
+        microrregiao_data,
+        glossario_data[["Sigla", "Título", "Unidade"]],  # Selecionar colunas úteis
+        on="Sigla",
+        how="left"
+    )
     microrregiao_data["Valor"] = microrregiao_data["Valor"].apply(changeMax)
     # Adicionar seleção de microrregiões no sidebar
     microrregioes_disponiveis = ["Todas"] + list(microrregioes.keys())
@@ -270,11 +294,6 @@ with tabs[1]:  # Aba de Microrregiões
     # Exibir tabela consolidada
     #show_consolidated_table(filtered_data_microrregioes, indicadores_selecionados, is_anual)
 
-    # Criar mapa para microrregiões
-    #mapa_microrregioes = create_map_microrregioes(geojson, filtered_data_microrregioes, microrregioes)
-    #st_folium(mapa_microrregioes, width=1000, height=600)
-    
-
     for microrregiao in microrregioes_selecionadas:
         if(microrregiao == 'Todas'):
             microrregioes_selecionadas = ['ALTO PIRANHAS',
@@ -283,18 +302,24 @@ with tabs[1]:  # Aba de Microrregiões
                                         'LITORAL']
             break
 
-    filtered_data_microrregioes = pd.merge(
-        filtered_data_microrregioes,
-        glossario_data[["Sigla", "Título", "Unidade"]],  # Selecionar colunas úteis
-        on="Sigla",
-        how="left"
-    )
-
-    create_comparative_chart_with_tabs_microrregioes(
-            filtered_data_microrregioes,
+    if is_anual:
+        st.markdown("## Gráfico Anual por Microrregiões")
+        create_annual_bar_chart_microrregioes(
+            data=microrregiao_data,
             microrregioes=microrregioes_selecionadas,
             indicadores=indicadores_selecionados,
-            periodo_anual=is_anual,
             ano_selecionado=ano_inicial
         )
+    else:
+        st.write(filtered_data_microrregioes[["Mês","Ano","Sigla","Valor"]])
+        create_comparative_chart_with_tabs_microrregioes(
+                filtered_data_microrregioes,
+                microrregioes=microrregioes_selecionadas,
+                indicadores=indicadores_selecionados,
+                periodo_anual=is_anual,
+                ano_selecionado=ano_inicial
+            )
     #create_comparative_chart_with_tabs_microrregioes(filtered_data_microrregioes, microrregioes, general_indicator_value, is_anual)
+    # Criar mapa para microrregiões
+    mapa_microrregioes = create_map_microrregioes(geojson, filtered_data_microrregioes, microrregioes, is_anual)
+    st_folium(mapa_microrregioes, width=1000, height=600)

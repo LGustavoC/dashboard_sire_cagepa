@@ -28,15 +28,19 @@ def show_detailed_table(data, is_anual):
         "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4, "Maio": 5, "Junho": 6,
         "Julho": 7, "Agosto": 8, "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
     }
+    data = data.copy()
     # Garantir que as colunas `Mês` e `Ano` estão preenchidas
     data["Mês"] = data["Mês"].fillna("Indefinido")
     data["Ano"] = data["Ano"].fillna("Indefinido")
-    # Criar colunas auxiliares `Mês_Num` e `Período`
-    data["Mês_Num"] = data["Mês"].map(meses_ordenados).fillna(0).astype(int)
-    data["Período"] = data["Mês"] + "/" + data["Ano"]
-    # Garantir que `Período` seja válido
-    data = data[~data["Período"].str.contains("Indefinido|Indefinido")]
-    data = data.sort_values(['Sigla','Mês_Num','Ano','Cidade'])
+    if is_anual:
+        data = data[data['Mês']== 'Indefinido']
+    else:
+        # Criar colunas auxiliares `Mês_Num` e `Período`
+        data["Mês_Num"] = data["Mês"].map(meses_ordenados).fillna(0).astype(int)
+        data["Período"] = data["Mês"] + "/" + data["Ano"]
+        # Garantir que `Período` seja válido
+        data = data[~data["Período"].str.contains("Indefinido|Indefinido")]
+        data = data.sort_values(['Sigla','Mês_Num','Ano','Cidade'])
     # Exibir tabela detalhada
     st.markdown("### Dados Detalhados por Município")
     if not data.empty:

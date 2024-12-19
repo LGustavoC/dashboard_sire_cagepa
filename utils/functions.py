@@ -28,7 +28,7 @@ def changeMax(value):
         value = 100
     return value
 
-def agrupar_dados_por_microrregiao(indicator_data, microrregioes, operacoes):
+def agrupar_dados_por_microrregiao(indicator_data, microrregioes, operacoes, is_anual):
     """
     Agrupa os dados das cidades para formar os dados consolidados por microrregião, com valores arredondados para cima.
     
@@ -50,14 +50,22 @@ def agrupar_dados_por_microrregiao(indicator_data, microrregioes, operacoes):
         for sigla, operacao in operacoes.items():
             # Filtrar os dados por indicador (Sigla)
             sigla_data = cidades_data[cidades_data["Sigla"] == sigla]
-
-            # Aplicar a operação
-            if operacao == "mean":
-                agrupado = sigla_data.groupby(["Ano", "Mês"]).agg({"Valor": "mean"}).reset_index()
-            elif operacao == "sum":
-                agrupado = sigla_data.groupby(["Ano", "Mês"]).agg({"Valor": "sum"}).reset_index()
+            if(is_anual):
+                # Aplicar a operação
+                if operacao == "mean":
+                    agrupado = sigla_data.groupby(["Ano"]).agg({"Valor": "mean"}).reset_index()
+                elif operacao == "sum":
+                    agrupado = sigla_data.groupby(["Ano"]).agg({"Valor": "sum"}).reset_index()
+                else:
+                    raise ValueError(f"Operação '{operacao}' não suportada para o indicador '{sigla}'.")
             else:
-                raise ValueError(f"Operação '{operacao}' não suportada para o indicador '{sigla}'.")
+                # Aplicar a operação
+                if operacao == "mean":
+                    agrupado = sigla_data.groupby(["Ano", "Mês"]).agg({"Valor": "mean"}).reset_index()
+                elif operacao == "sum":
+                    agrupado = sigla_data.groupby(["Ano", "Mês"]).agg({"Valor": "sum"}).reset_index()
+                else:
+                    raise ValueError(f"Operação '{operacao}' não suportada para o indicador '{sigla}'.")
 
             # Arredondar os valores para cima com uma casa decimal
             agrupado["Valor"] = np.ceil(agrupado["Valor"] * 10) / 10

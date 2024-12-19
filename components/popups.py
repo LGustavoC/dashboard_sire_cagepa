@@ -74,21 +74,24 @@ def create_popup_with_tabs(data, municipio):
 
     return bootstrap_includes + custom_styles + html
 
-def create_popup_with_tabs_microrregioes(data, microrregiao):
+def create_popup_with_tabs_microrregioes(data, microrregiao, is_anual):
     """
     Cria o conteúdo HTML do popup com abas de indicadores para microrregiões,
     organizando os dados por período e corrigindo estilo usando Bootstrap.
     """
     # Criar uma cópia explícita do DataFrame para evitar o aviso
     data = data.copy()
-
-    # Ordenar os dados por Ano e Mês
-    meses_ordenados = {
-        "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4, "Maio": 5, "Junho": 6,
-        "Julho": 7, "Agosto": 8, "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
-    }
-    data["Mês_Num"] = data["Mês"].map(meses_ordenados).fillna(0).astype(int)
-    data = data.sort_values(by=["Ano", "Mês_Num"])
+    if(is_anual):
+        data["Mês_Num"] = data["Mês"]
+        data = data.sort_values(by=["Ano", "Mês_Num"])
+    else:
+        # Ordenar os dados por Ano e Mês
+        meses_ordenados = {
+            "Janeiro": 1, "Fevereiro": 2, "Março": 3, "Abril": 4, "Maio": 5, "Junho": 6,
+            "Julho": 7, "Agosto": 8, "Setembro": 9, "Outubro": 10, "Novembro": 11, "Dezembro": 12
+        }
+        data["Mês_Num"] = data["Mês"].map(meses_ordenados).fillna(0).astype(int)
+        data = data.sort_values(by=["Ano", "Mês_Num"])
 
     indicadores = data["Sigla"].unique()
     html = f"<h4>{microrregiao}</h4>"

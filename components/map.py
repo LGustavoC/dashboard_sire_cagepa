@@ -1,7 +1,6 @@
 from components.popups import create_popup_with_tabs, create_custom_popup_microrregiao, create_popup_with_tabs_microrregioes
 import folium
 from folium.plugins import Fullscreen
-import streamlit as st
 
 def create_map(geojson, data, municipios_selecionados, nao_atendidas):
     """
@@ -22,7 +21,7 @@ def create_map(geojson, data, municipios_selecionados, nao_atendidas):
             popup_info = f"<b>{municipio}</b><br>Não atendida."
         else:
             # Filtrar os dados para a cidade atual
-            municipio_data = data[data["IBGE"] == municipio_id]
+            municipio_data = data[data["IBGE"] == municipio_id].copy()
 
             if not municipio_data.empty:  # Cidade com dados
                 if municipio in municipios_selecionados:
@@ -54,65 +53,10 @@ def create_map(geojson, data, municipios_selecionados, nao_atendidas):
 
     return mapa
 
-def create_map_microrregioes(geojson, microrregiao_data, microrregioes):
+def create_map_microrregioes(geojson, microrregiao_data, microrregioes, is_anual):
     """
     Cria um mapa com as cidades exibindo dados consolidados por microrregião.
     """
-    mapa = folium.Map(location=[-7.1212, -36.7246], zoom_start=8)
-    Fullscreen(position="topright").add_to(mapa)
-
-    # Definir cores únicas para cada microrregião
-    cores = ["red", "green", "orange", "blue"]
-    cor_microrregiao = {microrregiao: cores[i % len(cores)] for i, microrregiao in enumerate(microrregioes)}
-
-    for _, row in geojson.iterrows():
-        municipio = row["name"]
-        municipio_id = str(row["id"])
-
-        # Encontrar a microrregião da cidade
-        microrregiao = next(
-            (m for m, cidades in microrregioes.items() if municipio_id in cidades), None
-        )
-
-        if microrregiao:
-            color = cor_microrregiao[microrregiao]
-            dados_microrregiao = microrregiao_data[microrregiao_data["Microrregião"] == microrregiao]
-
-            # Criar popup com os dados da microrregião
-            popup_info = f"<b>Microrregião: {microrregiao}</b><br>"
-            #for _, dado in dados_microrregiao.iterrows():
-                #popup_info += f"Indicador: {dado['Sigla']} - Valor: {dado['Valor']}<br>"
-            popup_info = create_popup_with_tabs_microrregioes(dados_microrregiao, microrregiao)
-            
-            #custom_popup = create_popup_with_tabs_microrregioes(microrregiao, microrregiao_data)
-            folium.GeoJson(
-                row.geometry,
-                style_function=lambda x, color=color: {
-                    "fillColor": color,
-                    "color": "black",
-                    "weight": 1,
-                    "fillOpacity": 0.5,
-                },
-                tooltip=f"{municipio} ({microrregiao})",
-                popup=folium.Popup(popup_info, max_width=1000)
-                #popup=popup_info,
-            ).add_to(mapa)
-
-    return mapa
-
-def create_map_microrregioes0(geojson, microrregiao_data, microrregioes):
-    """
-    Cria um mapa com as cidades exibindo dados consolidados por microrregião.
-    
-    Args:
-        geojson (gpd.GeoDataFrame): GeoJSON contendo os dados das cidades.
-        microrregiao_data (pd.DataFrame): Dados consolidados por microrregião.
-        microrregioes (dict): Dicionário mapeando microrregiões para os IBGEs das cidades.
-    
-    Returns:
-        folium.Map: Objeto do mapa Folium.
-    """
-    # Inicializar o mapa
     mapa = folium.Map(location=[-7.1212, -36.7246], zoom_start=8)
     Fullscreen(position="topright").add_to(mapa)
 
@@ -133,21 +77,26 @@ def create_map_microrregioes0(geojson, microrregiao_data, microrregioes):
         if microrregiao:
             color = cor_microrregiao[microrregiao]
 
-            # Criar o popup personalizado
-            popup_html = create_custom_popup_microrregiao(microrregiao, microrregiao_data)
-            popup = folium.Popup(popup_html, max_width=300)
+            # Filtrar os dados da microrregião
+            dados_microrregiao = microrregiao_data[microrregiao_data["Microrregião"] == microrregiao].copy()
+            
+            # Atualizar a coluna "Mês" para "Indefinido" explicitamente usando `.loc`
+            dados_microrregiao.loc[:, "Mês"] = "Indefinido"
+
+            # Criar popup com os dados da microrregião
+            popup_info = create_popup_with_tabs_microrregioes(dados_microrregiao, microrregiao, is_anual)
 
             # Adicionar a cidade ao mapa com o estilo da microrregião
             folium.GeoJson(
-                data=row.geometry,
+                row.geometry,
                 style_function=lambda x, color=color: {
                     "fillColor": color,
                     "color": "black",
                     "weight": 1,
-                    "fillOpacity": 0.6,
+                    "fillOpacity": 0.5,
                 },
                 tooltip=folium.Tooltip(f"{municipio} ({microrregiao})"),
-                popup=popup,
+                popup=folium.Popup(popup_info, max_width=1000)
             ).add_to(mapa)
 
     return mapa

@@ -28,7 +28,7 @@ def load_geojson(file_path):
 def load_indicator_data(file_path):
     data = pd.read_csv(file_path, sep=',')
     # Limpar dados
-    columns_to_check = ["IBGE", "Cidade", "Sigla", "Ano", "Mês", "Valor"]  # Colunas críticas
+    columns_to_check = ["IBGE", "Cidade", "Sigla", "Ano", "Valor"]  # Colunas críticas
     data = clean_data(data, columns_to_check)
     
 
