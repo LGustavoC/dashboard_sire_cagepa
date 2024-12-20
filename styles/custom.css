@@ -1,7 +1,7 @@
 /* Estilização geral da página */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f5f5f5; /* Cor de fundo clara */
+    background-color: #f5f5f5 !important; /* Cor de fundo clara */
     margin: 0;
     padding: 0;
 }
@@ -20,7 +20,7 @@ h1, h2, h3, h4, h5, h6 {
 /* Botões da barra lateral */
 button {
     background-color: #004488; /* Azul escuro */
-    color: white; /* Texto branco */
+    color: white !important; /* Texto branco */
     border: none;
     border-radius: 4px;
     padding: 0.5rem 1rem;
@@ -39,7 +39,7 @@ table {
 
 th {
     background-color: #004488; /* Azul escuro */
-    color: white; /* Texto branco */
+    color: white !important; /* Texto branco */
     padding: 0.5rem;
     text-align: left;
 }
@@ -86,10 +86,10 @@ td {
 
 /* Estilo para gráficos (futuro) */
 .graph-container {
-    border: 1px solid #ccc;
+    border: 1px solid #ccc !important;
     border-radius: 8px;
     padding: 1rem;
-    background-color: white;
+    background-color: white !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -100,14 +100,14 @@ td {
 }
 
 .popup-table th, .popup-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #ddd !important;
     text-align: center;
     padding: 8px;
 }
 
 .popup-table th {
     background-color: #004488;
-    color: white;
+    color: white !important;
 }
 
 .st-emotion-cache-16txtl3 {
@@ -120,12 +120,12 @@ td {
     color: white !important;
 }
 .st-emotion-cache-l9bjmx p {
-    color: white;
+    color: white !important;
     font-size: 130%;
     font-weight: 600;
 }
 .st-emotion-cache-10fz3ls {
-    color: white;
+    color: white !important;
     font-size: 50px !important;
     font-weight: 600;
 }
@@ -138,7 +138,7 @@ td {
     gap: 5px;
 }
 .stTabs [data-baseweb="tab"] {
-    color: white;
+    color: white !important;
     height: 50%;
     width: 50%;
     white-space: pre-wrap;
@@ -161,7 +161,7 @@ td {
     text-align: center;
 }
 .button[data-testid="baseButton-header"]{
-    color: white;
+    color: white !important;
 }
 
 .st-emotion-cache-eqffof p {

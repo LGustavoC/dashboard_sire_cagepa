@@ -190,7 +190,7 @@ def display_metrics(sigla, ano, cidades=None):
             meta = "Meta não definida"
 
     # Exibir métricas no Streamlit
-    st.metric(label=" ", value=meta)
+    st.metric(label="Meta", value=meta)
     #st.metric(label=f"Métrica - {sigla} ({ano})", value=meta)
 
     # Exemplo de diferentes valores para cada sigla

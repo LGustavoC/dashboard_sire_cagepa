@@ -123,7 +123,7 @@ def create_comparative_chart_with_tabs(data, cidades, indicadores, periodo_anual
                 st.write("Nenhum dado disponível para este indicador.")
                 continue
 
-            st.write("Meta:")
+            #st.write("Meta:")
             display_metrics(indicador, int(ano_selecionado), indicador_data["IBGE"])
 
             # Criar tabs para diferentes tipos de gráficos
