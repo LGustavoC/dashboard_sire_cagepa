@@ -111,10 +111,10 @@ td {
 }
 
 .st-emotion-cache-16txtl3 {
-    background: #02eade !important;
+    background: #004488 !important;
 }
 .st-emotion-cache-6qob1r {
-    background: #02eade !important;
+    background: #004488 !important;
 }
 .st-emotion-cache-16txtl3 h1 {
     color: white !important;
@@ -134,9 +134,15 @@ td {
 }
 .st-emotion-cache-ue6h4q p{
     color: white !important;
-    font-size: 100% !important;
+    font-size: 20px !important;
     font-weight: 600 !important;
 }
+
+.eyeqlp51.st-emotion-cache-1pbsqtx.ex0cdmw0 {
+    background-color: #004488 !important;
+    color: white !important;
+    border-radius: 50% !important;
+  }
 /*
 .st-emotion-cache-10fz3ls {
     color: white !important;
