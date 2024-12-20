@@ -127,7 +127,7 @@ def create_comparative_chart_with_tabs(data, cidades, indicadores, periodo_anual
             display_metrics(indicador, int(ano_selecionado), indicador_data["IBGE"])
 
             # Criar tabs para diferentes tipos de gráficos
-            tabs_graph = st.tabs(["Gráfico Temporal", "Gráfico por Subgráficos"])
+            tabs_graph = st.tabs(["Gráfico Temporal", "Subgráficos"])
 
             with tabs_graph[0]:
                 # Gráfico de linhas para dados mensais
