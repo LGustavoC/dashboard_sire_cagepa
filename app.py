@@ -135,7 +135,12 @@ with tabs[0]:  # Aba de Cidades
     ano_final = ano_inicial
     mes_inicial = st.sidebar.selectbox("Mês Inicial", meses_disponiveis, index=0)
     mes_final = st.sidebar.selectbox("Mês Final", meses_disponiveis, index=len(meses_disponiveis) - 1)
-    is_anual = st.sidebar.checkbox("Consolidado Anual")
+    is_anual = st.sidebar.selectbox("Consolidado Anual", ('Sim', 'Não'))
+    if(is_anual == 'Sim'):
+        is_anual = True
+    else:
+        is_anual = False
+    #is_anual = st.sidebar.checkbox("Consolidado Anual")
     #is_anual = False
 
     # Filtrar os dados
