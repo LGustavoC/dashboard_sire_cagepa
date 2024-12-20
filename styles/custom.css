@@ -119,16 +119,30 @@ td {
 .st-emotion-cache-16txtl3 h1 {
     color: white !important;
 }
-.st-emotion-cache-l9bjmx p {
+.st-emotion-cache-1puwf6r {
+    color: white !important;
+}
+/* .st-emotion-cache-l9bjmx p {
     color: white !important;
     font-size: 130%;
     font-weight: 600;
+} */
+ .st-emotion-cache-ue6h4q {
+    color: white !important;
+    font-size: 130% !important;
+    font-weight: 600 !important;
 }
+.st-emotion-cache-ue6h4q p{
+    color: white !important;
+    font-size: 100% !important;
+    font-weight: 600 !important;
+}
+/*
 .st-emotion-cache-10fz3ls {
     color: white !important;
     font-size: 50px !important;
     font-weight: 600;
-}
+} */
 
 #stMarkdownContainer {
     color: black !important;
